@@ -19,35 +19,37 @@ addToMovies(
   '{"Title":"Top Secret!","Year":"1984","Rated":"PG","Released":"08 Jun 1984","Runtime":"90 min","Genre":"Comedy, Music","Director":"Jim Abrahams, David Zucker, Jerry Zucker","Writer":"Jim Abrahams, David Zucker, Jerry Zucker, Martyn Burke","Actors":"Val Kilmer, Lucy Gutteridge, Peter Cushing, Jeremy Kemp","Plot":"Parody of WWII spy movies in which an American rock and roll singer becomes involved in a Resistance plot to rescue a scientist imprisoned in East Germany.","Language":"English, German, Yiddish","Country":"UK, USA","Awards":"N/A","Poster":"https://images-na.ssl-images-amazon.com/images/M/MV5BMmNhMTZlMmItMDRkYy00YjBlLThiZTEtZDQ1ZjNmYWM4NWVkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg","Metascore":"N/A","imdbRating":"7.2","imdbVotes":"48,308","imdbID":"tt0088286","Type":"movie","Response":"True"}'
 )
 
-aryMovies.sort(function(a, b){
-  var a = a.Title, b = b.Title
-  if(a < b) return -1  //sort string ascending
-  if(a > b) return 1   //sort string descending
-  return 0             //no sorting
-})
+function sortMoviesByTitle(arrayOfMovies){
+  arrayOfMovies.sort(function(a, b){
+    return a.Title.localeCompare(b.Title)
+  })
+}
+
+sortMoviesByTitle(aryMovies)
 
 aryMovies.forEach(function(ary){
   console.log(ary.Title)
 })
 
-element = document.getElementById('content')
-element.innerHTML += "<ul></ul>"
-element.innerHTML += "<div id=\"fav-movies\"><h2>Favorite Films</h2><ul></ul></div>"
-film_list = document.querySelector("#fav-movies ul")
 
+ULofMovies = document.querySelector("#fav-movies ul")
 function getMovieFromOMDb(title){
   query = "http://www.omdbapi.com/?t=" + title
   fetch(query, { method: 'POST' })
     .then(function(response){
       return response.json()
     })
-    .then(function(data){
-      film_list.innerHTML += "<li><strong><em>&ldquo;" + data.Title + "&rdquo;</em></strong> (" + data.Year + "): " +
-      "<ul>" +
-        "<li><u>Director</u>: " + data.Director + "</li>" +
-        "<li><u>Genre</u>: " + data.Genre + "</li>" +
-        "<li><u>Actors</u>: " + data.Actors + "</li>" +
-      "</li>"
+    .then(function(Movie){
+      ULofMovies.innerHTML += `
+        <li>
+          <strong><em>&ldquo;${Movie.Title}&rdquo;</em></strong>&nbsp;(${Movie.Year}):
+          <ul>
+            <li><u>Director</u>: ${Movie.Director}</li>
+            <li><u>Genre</u>: ${Movie.Genre}</li>
+            <li><u>Actors</u>: ${Movie.Actors}</li>
+          </ul>
+        </li>
+      `
     })
 }
 
@@ -57,6 +59,3 @@ getMovieFromOMDb("Youth Without Youth")
 getMovieFromOMDb("Gettysburg")
 getMovieFromOMDb("Top Secret!")
 getMovieFromOMDb("K-PAX")
-
-
-// console.log(JSON.stringify(arr))
